@@ -15,7 +15,7 @@ public class user {
     private String username;
     @Email
     private String email;
-    @Size(min = 5, max = 10)
+    @Size(min = 5)
     private String password;
 
     public int getId() {

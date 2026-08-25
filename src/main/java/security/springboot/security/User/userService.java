@@ -1,15 +1,22 @@
 package security.springboot.security.User;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class userService {
 
     private final userRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public userService(userRepository userRepository) {
+
+
+    public userService(userRepository userRepository , PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
 
     public user userSignUp(String username, String email, String password) {
 
@@ -25,7 +32,7 @@ public class userService {
 
         newUser.setUsername(username);
         newUser.setEmail(email);
-        newUser.setPassword(password);
+        newUser.setPassword(passwordEncoder.encode(password));
 
         return userRepository.save(newUser);
     }
@@ -39,7 +46,7 @@ public class userService {
                         )
                 );
 
-        if (!user.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
 
